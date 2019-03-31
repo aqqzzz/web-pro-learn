@@ -1,0 +1,95 @@
+<h1>引言</h1>
+整理了过往项目中移动端适配的一些心得。
+<!--more-->
+<h1>一、移动端适配的几种方案</h1>
+<h2>1.viewport缩放</h2>
+在这种方案中，页面本身是固定宽度的，获取设备宽度后设置页面viewport，将页面放大（设备宽度/页面宽度）倍来实现适配。下例是固定宽度320的页面放大到6s的适配（约1.3倍）。
+<pre>&lt;meta name="viewport" content="width=320, initial-scale=1.3, minimum-scale=1.3, maximum-scale=1.3, user-scalable=no"&gt;</pre>
+有观点认为这种做法会使页面变模糊，其实很好解决，先将页面宽度做的比较大（比如说750），再进行缩小就行了。在rem单位出现/得到普遍支持之前，不得不说这几乎是一种完美的解决思路，据说天猫web app就是这么处理的。缺点是缺乏一点的灵活性。
+<h2>2.百分比宽度</h2>
+先前项目最早的一批组件就是用百分比宽度+浮动布局进行适配的，主要受bootstrap的百分比宽度栅格布局的影响。用百分比宽度+inline-block或者百分比宽度+flex布局也能实现，浮动的兼容性好，flex更加灵活。
+然而这种解决办法无法完美地解决高度上的问题，在处理图片时尤为突出，试想一个这样的需求：
+<blockquote>使一个图像的宽度为固定百分比且始终呈现正方形（不管原图的高宽比为多少）。</blockquote>
+因为图片宽度的百分比值是基于父元素宽度计算的，图片高度的百分比值是基于父元素高度计算的，但父元素宽度位置，高度无法直接确定，又怎么能让图像高度与宽度相等呢？
+最后还是在知乎上找到了答案，因为padding的百分比值总是基于父元素宽度计算的（x、y方向均如是），可以利用这一点做一些事情。
+因此只要有
+<pre>width: 100%;
+height: 0;
+padding-top: 100%;
+</pre>
+就能实现一个正方形盒，在盒内用绝对定位填充img或者设置背景就能解决需求了，其他不同高宽比的图像还能通过调节padding-top适配。不过这种做法意味着在冗余的dom嵌套加绝对定位和背景替代img之间进行抉择，并不是完美的解决方案。
+<h2>3.rem布局</h2>
+<blockquote>rem unit
+Equal to the computed value of font-size on the root element. When specified on the font-size property of the root element, the rem units refer to the property's initial value.</blockquote>
+1rem总是等于根元素html下的font-size值，利用js动态设置html的font-size就能将其应用到移动端适配，后面讲具体思路。
+<h2>4.vw单位</h2>
+vw的效果理论上讲与rem是很接近的，知乎上的观点是vw的兼容性不佳，被普遍支持的时间太晚，所以实际应用很少。不过私以为vw的另一个毛病是换算起来真的很麻烦，依赖预处理器配合。
+<h1>二、REM的具体实践</h1>
+<h2>1.设置根元素字体大小</h2>
+最开始的时候被一篇文章误导，这篇文章大概是这么讲的，设置
+<pre>html {
+font-size: 62.5%;
+}
+</pre>
+浏览器默认字体为16px，则此时1rem = 10px。
+这里有两个问题
+<ol>
+     <li>浏览器默认字体不一定是16px（比如我的chrome默认是14px，且可以在设置中被改动）</li>
+     <li>chrome浏览器有最小字体限制（好吧又是chrome，有最小12px的限制，同样可以被设置）</li>
+</ol>
+其实很好解决
+<pre>html {
+font-size: 100px;
+}
+</pre>
+此时1rem = 100px。
+<h2>2.动态调整根元素字体大小</h2>
+接下来只要确定常用设计稿宽度，根据这一宽度用js动态调整这个font-size值：
+<pre>var designWidth = 750 //比较通用的设计稿宽度
+document.getElementsByTagName('html')[0].style.fontSize = (window.innerWidth / designWidth * 100) + 'px'
+</pre>
+（这段js代码要放在head标签中，以保证在页面加载前执行。）
+据此，所有希望自适应的长度值，都只需要进行一个简单的换算，例如120px换算为1.2rem，在375像素宽的手机屏上1.2rem会显示为120px，而在414（6s）像素宽的手机上显示为132.48px，小数问题由浏览器解决。
+<h2>3.高分辨率显示与border</h2>
+前面提到的像素实际上是CSS像素，但是现在的手机屏往往具有更高的物理分辨率，这会导致多个物理像素显示一个CSS像素，页面会略显模糊
+此外，设计稿中1px宽的border是基于750宽度的，但用0.01rem替代有时又会导致border不可见（换算为px后因为太窄被忽略了）。
+因此需要对页面进行整体放缩。考虑到
+<blockquote>window.devicePixelRatio = 物理像素宽度 / CSS像素宽度</blockquote>
+故只要将
+<pre>&lt;meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"&gt;</pre>
+viewport中的三个缩放值均设置为 1 / window.devicePixelRatio 即可。
+由于缩放过程中 window.innerWidth 也会按比例变化，前面的js代码并不受到影响，窄边框用1px，其他长度单位用rem就行了。
+（注1：实际上更省事一些的话，将缩放值均设置为0.5也是可行的。）
+（注2：高分辨率显示时也要注意图片的质量。）
+<h1>三、SASS处理</h1>
+前面已经讲过，现在编写样式时，只要将设计稿长度值除以100后添上rem单位即可，不过这样做还是不是很爽或者有的时候想保留原始的px数值。对此PostCSS有自动处理的插件，由于项目中写sass比较多，这里分享一个sass的function。
+<pre>@function rpx($px...) {
+  //设计稿测量值转rem值，单个参数返回带单位数字，多个参数返回字符串
+  @if length($px) == 1 {
+    @return if(nth($px, 1) == 0, 0, nth($px, 1) / 100 * 1rem);
+  } @else {
+    $rpx: '';
+    @each $i in $px {
+      @if $i == 0 {
+        $rpx: $rpx + ' 0';
+      } @else {
+        $rpx: $rpx + ' ' + $i / 100 * 1rem;
+      }
+    }
+    @return unquote($rpx);
+  }
+}
+
+//调用方式
+.box {
+  margin: rpx(12, 10, 5, 0);
+}
+</pre>
+（注：sass的function可以通过在参数后加...来允许传入多个参数，此时可以按list的方式处理参数。）
+<h1>四、其他问题</h1>
+这是今天刚遇到的一个问题，在某些情况下，chrome会认为字体显示过小，便自作主张将字体放大了。在使用rem单位和页面缩放时这一问题是比较严重的，最后查到的解决方法是这样的：
+<pre>* {
+  max-height: 999999px;
+}
+</pre>
+附上StackOverflow上关于这个问题的链接<a href="http://stackoverflow.com/questions/11289166/chrome-on-android-resizes-font">Chrome on android resizes font</a>

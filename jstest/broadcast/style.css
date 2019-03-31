@@ -1,0 +1,122 @@
+    /*reset*/
+    * {
+      border: none;
+      padding: 0;
+      margin: 0;
+  }
+  button {
+      outline: none;
+  }
+  li {
+      list-style: none;
+  }
+
+  .carousel-wrapper {
+      width:520px;
+      height:280px;
+      overflow: hidden;   /*关键*/
+      position: relative;
+      margin: 100px auto;
+  }
+  .carousel-item-wrapper {
+      width:3640px;
+      height:280px;
+      /* position: absolute; */
+      /* top: 0; */
+      /* left: -520px; */
+      transition: all .2s ease-in;
+      position: relative;
+      /* left: -520px; */
+      /* transform: translateX(-520px); */
+  }
+  .carousel-item a {
+      display: block;
+      background-color: red;
+      width:520px;
+      height: 280px;
+  }
+
+  /*使用不同背景色的a替代图片。*/
+  .carousel-item:nth-child(1) a {
+      background-color: rgb(129,194,214);
+      /*第五张图片的复制*/
+  }
+  .carousel-item:nth-child(2) a {
+      background-color: rgb(129,146,214);
+  }
+  .carousel-item:nth-child(3) a {
+      background-color: rgb(217,179,230);
+  }
+  .carousel-item:nth-child(4) a {
+      background-color: rgb(220,247,161);
+  }
+  .carousel-item:nth-child(5) a {
+      background-color: rgb(131,252,216);
+  }
+  .carousel-item:nth-child(6) a {
+      background-color: rgb(129,194,214);
+  }
+  .carousel-item:nth-child(7) a {
+      background-color: rgb(129,146,214);
+      /*第一张图片的复制*/
+  }
+
+  .carousel-item {
+      float: left;
+  }
+  .carousel-index-mark {
+      font-size:60px;
+      color: black;
+      position: absolute;
+      top: 0;
+  }
+  .carousel-control-wrapper {
+      transition: all .2s;
+  }
+  .carousel-wrapper:hover button {
+      display: block;
+  }
+  .carousel-control-wrapper button {
+      transition: all .2s linear;
+      display: none;
+      width:24px;
+      height:36px;
+      line-height:36px;
+      background-color: rgba(0,0,0,.3);
+      color: #fff;
+      position: absolute;
+      top: 50%;
+      cursor: pointer;
+  }
+  button#prev {
+      left:0;
+  }
+  button#next {
+      right:0;
+  }
+  button i {
+      font-size: 18px;
+  }
+  .carousel-index-wrapper {
+      width:65px;
+      height:13px;
+      overflow: hidden;
+      position: absolute;
+      bottom:15px;
+      left:50%;
+      margin-left: -33px;
+  }
+  .carousel-index-btn {
+      width:9px;
+      height:9px;
+      float: left;
+      margin:2px;
+      background-color: #b7b7b7;
+      border-radius: 50%;
+      text-indent: -999em;
+      /*这个-999em的文字对齐声明有助于增强可访问性。*/
+      cursor: pointer;
+  }
+  .active-carousel-index-btn {
+      background-color: #f44103;
+  }

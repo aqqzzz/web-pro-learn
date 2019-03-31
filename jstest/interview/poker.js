@@ -1,0 +1,35 @@
+/**
+ * 
+ * 扑克牌问题
+
+我手中有一堆扑克牌， 但是观众不知道它的顺序。
+
+第一步， 我从牌顶拿出一张牌， 放到桌子上。
+
+第二步， 我从牌顶再拿一张牌， 放在手上牌的底部。
+
+第三步， 重复第一步、第二步的操作， 直到我手中所有的牌都放到了桌子上。
+
+最后， 观众可以看到桌子上牌的顺序是：(牌底部）1,2,3,4,5,6,7,8,9,10,11,12,13(牌顶部）
+
+请问， 我刚开始拿在手里的牌的顺序是什么？} arr 
+ */
+
+function find(arr) {
+  arr.reverse()
+  let i = 0
+  let res = []
+  res.push(arr[i])
+  i += 1
+  while (i < arr.length) {
+      
+      let bottom = res.shift()
+      res.push(bottom)
+      res.push(arr[i])
+      i++
+  }
+  res.reverse()
+  return res
+}
+
+console.log(find(['a', 'c', 'e', 'b', 'f', 'd']))
