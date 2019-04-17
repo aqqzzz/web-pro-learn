@@ -181,19 +181,19 @@ Pragma、Expires
 
 2. 作为响应首部
 
-   | 字段名称               | 说明                                                         |
-   | ---------------------- | ------------------------------------------------------------ |
-   | public                 | 表明任何情况下都需要缓存该资源                               |
-   | Private[="field-name"] | 表明返回报文中全部或部分进开放给某些用户（服务器指定的share-user，如终端用户）作缓存使用，其他用户（如CDN等中级缓存服务器）不能缓存这些数据 |
-   | no-cache               | 不直接使用缓存，要求向服务器发起（新鲜度校验）请求           |
-   | no-store               | 所有内容都不会被保存或缓存到Internet临时文件中               |
-   | no-transform           | 告知客户端，缓存文件时不得对实体数据做任何改变               |
-   | only-if-cached         | 告知                                                         |
-   | must-revalidate        | 当前资源一定是向原服务器发去验证请求的，弱请求失败会返回504（而非代理服务器上的缓存） |
-   | proxy-revalidate       | 仅能用于共享缓存（如代理）                                   |
-   | max-age=delta-seconds  | 告知客户端，该资源在delta-seconds秒内是新鲜的，无需向服务器发请求 |
-   | s-maxage=delta-seconds | 与max-age相似，但仅用于共享缓存                              |
-   | cache-extension        | 自定义扩展值                                                 |
+   | 字段名称                   | 说明                                                         |
+   | -------------------------- | ------------------------------------------------------------ |
+   | **public**                 | 表明任何情况下都需要缓存该资源                               |
+   | **Private**[="field-name"] | 表明返回报文中全部或部分进开放给某些用户（服务器指定的share-user，如终端用户）作缓存使用，其他用户（如CDN等中级缓存服务器）不能缓存这些数据 |
+   | **no-cache**               | 不直接使用缓存，要求向服务器发起（新鲜度校验）请求           |
+   | **no-store**               | 所有内容都不会被保存或缓存到Internet临时文件中               |
+   | no-transform               | 告知客户端，缓存文件时不得对实体数据做任何改变               |
+   | only-if-cached             | 告知                                                         |
+   | must-revalidate            | 当前资源一定是向原服务器发去验证请求的，弱请求失败会返回504（而非代理服务器上的缓存） |
+   | proxy-revalidate           | 仅能用于共享缓存（如代理）                                   |
+   | **max-age**=delta-seconds  | 告知客户端，该资源在delta-seconds秒内是新鲜的，无需向服务器发请求 |
+   | s-maxage=delta-seconds     | 与max-age相似，但仅用于共享缓存                              |
+   | cache-extension            | 自定义扩展值                                                 |
 
 Cache-Control 可以自由组合可选值
 
@@ -202,6 +202,8 @@ Cache-Control: max-age=3600, must-revalidate
 ```
 
 该资源是从原服务器上获取的，而且其缓存的有效时间为一小时，在之后的一小时内，用户重新访问该资源则无需发送请求
+
+Cache-Control 和 Expires 中，Cache-Control 优先级更高
 
 ### 缓存校验字段
 
