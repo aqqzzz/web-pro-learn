@@ -2,3 +2,5 @@
 *yarn.lock
 *package-lock.json
 /.DS_Store
+/webpackTest/react-ssr/node_modules
+node_modules

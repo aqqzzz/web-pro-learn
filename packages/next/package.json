@@ -1,0 +1,26 @@
+{
+  "name": "next",
+  "version": "1.0.0",
+  "description": "> TODO: description",
+  "author": "zhangerduo <592710057@qq.com>",
+  "homepage": "https://github.com/aqqzzz/web-pro-learn#readme",
+  "license": "ISC",
+  "main": "lib/next.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aqqzzz/web-pro-learn.git"
+  },
+  "scripts": {
+    "test": "node ./__tests__/next.test.js"
+  },
+  "bugs": {
+    "url": "https://github.com/aqqzzz/web-pro-learn/issues"
+  }
+}
